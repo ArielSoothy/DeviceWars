@@ -8,16 +8,18 @@ import "./styles/styles.css";
 
 
 const RankCharacter = ({ rank, isAttacking, isHit, position }) => {
+  const basePath = process.env.NODE_ENV === 'production' ? '/DeviceWars' : '';
+  
   const getCharacterImage = () => {
     switch (rank) {
       case 'Dragon':
-        return '/assets/characters/dragon.png';
+        return `${basePath}/assets/characters/dragon.png`;
       case 'Phoenix':
-        return '/assets/characters/phoenix.png';
+        return `${basePath}/assets/characters/phoenix.png`;
       case 'Griffin':
-        return '/assets/characters/griffin.png';
+        return `${basePath}/assets/characters/griffin.png`;
       case 'Unicorn':
-        return '/assets/characters/unicorn.png';
+        return `${basePath}/assets/characters/unicorn.png`;
       default:
         return null;
     }
