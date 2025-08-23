@@ -299,19 +299,24 @@ export default function DeviceBattler() {
     const currentHP = position === 1 ? currentHP1 : currentHP2;
     const currentMana = position === 1 ? currentMana1 : currentMana2;
 
+    const isLeft = position === 1;
+    
     return (
-      <div className="device-card-modern">
-        <div className="card-header-modern">
+      <div className={`device-card-modern ${isLeft ? 'fighter-left' : 'fighter-right'}`}>
+        {/* Character Section */}
+        <div className="fighter-character">
+          <RankCharacter
+            rank={device.rank}
+            isAttacking={position === 1 ? isDevice1Attacking : isDevice2Attacking}
+            isHit={position === 1 ? isDevice1Hit : isDevice2Hit}
+            position={position === 1 ? 'left' : 'right'}
+          />
+        </div>
+        
+        {/* Fighter Info */}
+        <div className="fighter-info">
           <div className="rank-badge">{device.rank}</div>
-          <div className="device-title-modern">{device.name}</div>
-          <div className="character-container">
-            <RankCharacter
-              rank={device.rank}
-              isAttacking={position === 1 ? isDevice1Attacking : isDevice2Attacking}
-              isHit={position === 1 ? isDevice1Hit : isDevice2Hit}
-              position={position === 1 ? 'left' : 'right'}
-            />
-          </div>
+          <div className="device-name">{device.name}</div>
         </div>
 
         {/* Vital Stats Always Visible */}
