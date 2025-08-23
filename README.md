@@ -1,3 +1,7 @@
+# DeviceWars
+
+DeviceWars is an interactive device battler game that transforms your computer specifications into RPG-style combat statistics.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
