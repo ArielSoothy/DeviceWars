@@ -1,0 +1,431 @@
+"use client";
+
+import React, { useState, useEffect } from 'react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Sword, Shield, Brain, Heart } from 'lucide-react';
+
+const deviceDatabase = {
+  "MacBook Pro M3 Max": {
+    geekbench: 21800,
+    processor: 14, // CPU Cores total
+    performanceCores: 12,
+    efficiencyCores: 4,
+    cpuFrequency: 4.2, // GHz
+    storage: 2000, // GB
+    storageSpeed: 7.4, // GB/s NVMe
+    ram: 64, // GB
+    ramSpeed: 6.4, // GB/s
+    gpu: 40, // GPU Cores
+    type: "mac"
+  },
+  "MacBook Air M2": {
+    geekbench: 12450,
+    processor: 8,
+    performanceCores: 8,
+    efficiencyCores: 2,
+    cpuFrequency: 3.5,
+    storage: 512,
+    storageSpeed: 5.0,
+    ram: 16,
+    ramSpeed: 5.2,
+    gpu: 10,
+    type: "mac"
+  },
+  "Gaming PC RTX 4090": {
+    geekbench: 19500,
+    processor: 16,
+    performanceCores: 16,
+    efficiencyCores: 0, // Traditional CPUs don't have efficiency cores
+    cpuFrequency: 5.2,
+    storage: 4000,
+    storageSpeed: 7.0,
+    ram: 64,
+    ramSpeed: 6.0,
+    gpu: 24,
+    type: "pc"
+  },
+  "Basic PC": {
+    geekbench: 8000,
+    processor: 6,
+    performanceCores: 6,
+    efficiencyCores: 0,
+    cpuFrequency: 2.8,
+    storage: 512,
+    storageSpeed: 2.5, // SATA SSD
+    ram: 16,
+    ramSpeed: 3.2,
+    gpu: 6,
+    type: "pc"
+  }
+};
+
+const RankCharacter = ({ rank, isAttacking, isHit, position }) => {
+  const getRankStyles = () => {
+    switch (rank) {
+      case 'Dragon':
+        return {
+          body: 'bg-red-600',
+          detail: 'bg-yellow-400',
+          special: 'bg-orange-500',
+        };
+      case 'Phoenix':
+        return {
+          body: 'bg-orange-500',
+          detail: 'bg-yellow-300',
+          special: 'bg-red-400',
+        };
+      case 'Griffin':
+        return {
+          body: 'bg-amber-700',
+          detail: 'bg-amber-500',
+          special: 'bg-amber-400',
+        };
+      case 'Unicorn':
+        return {
+          body: 'bg-white',
+          detail: 'bg-blue-200',
+          special: 'bg-purple-300',
+        };
+      default:
+        return {
+          body: 'bg-blue-300',
+          detail: 'bg-blue-100',
+          special: 'bg-blue-200',
+        };
+    }
+  };
+
+  const styles = getRankStyles();
+
+  return (
+    <div className={`relative ${position === 'left' ? 'scale-x-1' : 'scale-x-[-1]'}`}>
+      <div
+        className={`w-16 h-16 relative transition-all duration-200
+          ${isAttacking ? 'translate-x-4' : ''}
+          ${isHit ? 'animate-shake' : ''}
+        `}
+      >
+        <div className={`absolute w-12 h-12 ${styles.body} rounded-lg top-2 left-2`}>
+          <div className={`absolute w-8 h-6 ${styles.detail} top-2 left-2`}></div>
+          <div className={`absolute w-6 h-4 ${styles.special} top-0 left-3`}></div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default function DeviceBattler() {
+  const [device1, setDevice1] = useState(null);
+  const [device2, setDevice2] = useState(null);
+  const [battleLog, setBattleLog] = useState([]);
+  const [currentHP1, setCurrentHP1] = useState(0);
+  const [currentHP2, setCurrentHP2] = useState(0);
+  const [currentMana1, setCurrentMana1] = useState(0);
+  const [currentMana2, setCurrentMana2] = useState(0);
+  const [isBattling, setIsBattling] = useState(false);
+  const [winner, setWinner] = useState(null);
+  const [isDevice1Attacking, setIsDevice1Attacking] = useState(false);
+  const [isDevice2Attacking, setIsDevice2Attacking] = useState(false);
+  const [isDevice1Hit, setIsDevice1Hit] = useState(false);
+  const [isDevice2Hit, setIsDevice2Hit] = useState(false);
+
+  const calculateRank = (geekbench) => {
+    if (geekbench >= 20000) return { title: 'Dragon', multiplier: 1.5 };
+    if (geekbench >= 15000) return { title: 'Phoenix', multiplier: 1.3 };
+    if (geekbench >= 10000) return { title: 'Griffin', multiplier: 1.2 };
+    if (geekbench >= 5000) return { title: 'Unicorn', multiplier: 1.1 };
+    return { title: 'Sprite', multiplier: 1.0 };
+  };
+
+  const calculateStats = (device) => {
+    const rank = calculateRank(device.geekbench);
+    return {
+      // Health Stats
+      maxHP: Math.floor(device.storage * 2), // 2000GB = 4000HP
+      hpRegen: Math.floor(device.storageSpeed * 2), // 7.4GB/s = 15HP/turn
+
+      // Combat Stats
+      strength: Math.floor(device.processor * 10 * rank.multiplier), // CPU cores for physical damage
+      physicalDefense: Math.floor(device.performanceCores * 8), // Performance cores
+      magicDefense: Math.floor((device.efficiencyCores || 0) * 10), // Efficiency cores, default to 0 if none
+
+      // Speed
+      speed: Math.floor(device.cpuFrequency * 10), // 4.2GHz = 42 speed
+
+      // Magic Stats
+      maxMana: Math.floor(device.ram * 10), // 64GB = 640 mana
+      manaRegen: Math.floor(device.ramSpeed * 2), // 6.4GB/s = 13 mana/turn
+      spellPower: Math.floor(device.gpu * 8), // GPU cores for magical damage
+
+      // Meta
+      rank: rank.title,
+      multiplier: rank.multiplier
+    };
+  };
+
+  const selectDevice = (deviceName, position) => {
+    const device = {
+      name: deviceName,
+      ...deviceDatabase[deviceName],
+      ...calculateStats(deviceDatabase[deviceName]),
+    };
+
+    if (position === 1) {
+      setDevice1(device);
+      setCurrentHP1(device.maxHP);
+      setCurrentMana1(device.maxMana);
+    } else {
+      setDevice2(device);
+      setCurrentHP2(device.maxHP);
+      setCurrentMana2(device.maxMana);
+    }
+  };
+
+  const calculateDamage = (attacker, defender, isSpellAttack = false) => {
+    if (isSpellAttack) {
+      // Magical damage
+      const baseDamage = (attacker.spellPower * 0.8) + (attacker.maxMana * 0.2);
+      const defense = defender.magicDefense * 0.5;
+      const manaCost = Math.floor(attacker.spellPower * 0.3);
+
+      if (attacker.currentMana < manaCost) {
+        return { damage: 0, isDodged: false, isCritical: false, manaCost: 0, type: 'spell-failed' };
+      }
+
+      const criticalChance = Math.random() < 0.25;
+      const finalDamage = Math.max(1, Math.floor((baseDamage - defense) * (criticalChance ? 1.8 : 1)));
+
+      return { damage: finalDamage, isDodged: false, isCritical: criticalChance, manaCost, type: 'spell' };
+    } else {
+      // Physical damage
+      const baseDamage = (attacker.strength * 0.6) + (attacker.speed * 0.2);
+      const defense = defender.physicalDefense * 0.4;
+      const dodgeChance = (defender.speed - attacker.speed) * 0.01;
+
+      if (Math.random() < Math.max(0, Math.min(0.5, dodgeChance))) {
+        return { damage: 0, isDodged: true, isCritical: false, manaCost: 0, type: 'physical' };
+      }
+
+      const criticalChance = Math.random() < 0.2;
+      const finalDamage = Math.max(1, Math.floor((baseDamage - defense) * (criticalChance ? 1.5 : 1)));
+
+      return { damage: finalDamage, isDodged: false, isCritical: criticalChance, manaCost: 0, type: 'physical' };
+    }
+  };
+
+  useEffect(() => {
+    let battleTimeout;
+    if (isBattling && currentHP1 > 0 && currentHP2 > 0) {
+      battleTimeout = setTimeout(executeTurn, 1500);
+    }
+    return () => clearTimeout(battleTimeout);
+  }, [isBattling, currentHP1, currentHP2]);
+
+  const executeTurn = async () => {
+    if (!isBattling || !device1 || !device2) return;
+
+    // Regeneration phase
+    setCurrentHP1((prev) => Math.min(device1.maxHP, prev + device1.hpRegen));
+    setCurrentHP2((prev) => Math.min(device2.maxHP, prev + device2.hpRegen));
+    setCurrentMana1((prev) => Math.min(device1.maxMana, prev + device1.manaRegen));
+    setCurrentMana2((prev) => Math.min(device2.maxMana, prev + device2.manaRegen));
+
+    // Determine who goes first
+    const device1First = device1.speed > device2.speed || (device1.speed === device2.speed && Math.random() < 0.5);
+
+    // Execute turns
+    if (device1First) {
+      await handleAttack(device1, device2, 1);
+      if (currentHP2 > 0) {
+        await handleAttack(device2, device1, 2);
+      }
+    } else {
+      await handleAttack(device2, device1, 2);
+      if (currentHP1 > 0) {
+        await handleAttack(device1, device2, 1);
+      }
+    }
+  };
+
+  const handleAttack = async (attacker, defender, attackerNumber) => {
+    const useSpell = attackerNumber === 1 ? currentMana1 >= attacker.spellPower * 0.3 && Math.random() < 0.4 : currentMana2 >= attacker.spellPower * 0.3 && Math.random() < 0.4;
+
+    const { damage, isDodged, isCritical, manaCost, type } = calculateDamage(attacker, defender, useSpell);
+
+    if (attackerNumber === 1) {
+      setIsDevice1Attacking(true);
+      if (type === 'spell') setCurrentMana1((prev) => prev - manaCost);
+    } else {
+      setIsDevice2Attacking(true);
+      if (type === 'spell') setCurrentMana2((prev) => prev - manaCost);
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    if (attackerNumber === 1) {
+      setIsDevice1Attacking(false);
+      if (!isDodged) setIsDevice2Hit(true);
+      setTimeout(() => setIsDevice2Hit(false), 300);
+    } else {
+      setIsDevice2Attacking(false);
+      if (!isDodged) setIsDevice1Hit(true);
+      setTimeout(() => setIsDevice1Hit(false), 300);
+    }
+
+    if (!isDodged && damage > 0) {
+      if (attackerNumber === 1) {
+        setCurrentHP2((prev) => Math.max(0, prev - damage));
+      } else {
+        setCurrentHP1((prev) => Math.max(0, prev - damage));
+      }
+
+      const logMessage = `${attacker.name} ${type === 'spell-failed' ? "tried to cast a spell but didn't have enough mana!" : `${type === 'spell' ? 'cast a spell for' : 'dealt'} ${damage} damage`}${isCritical ? ' (Critical Hit!)' : ''}`;
+      setBattleLog((prev) => [...prev, logMessage]);
+
+      if ((attackerNumber === 1 && currentHP2 - damage <= 0) || (attackerNumber === 2 && currentHP1 - damage <= 0)) {
+        setWinner(attacker);
+        setIsBattling(false);
+        setBattleLog((prev) => [...prev, `${attacker.name} wins!`]);
+      }
+    } else {
+      setBattleLog((prev) => [...prev, `${defender.name} dodged the attack!`]);
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  };
+
+  const startBattle = () => {
+    if (!device1 || !device2 || isBattling) return;
+    setIsBattling(true);
+    setWinner(null);
+    setCurrentHP1(device1.maxHP);
+    setCurrentHP2(device2.maxHP);
+    setCurrentMana1(device1.maxMana);
+    setCurrentMana2(device2.maxMana);
+    setBattleLog([`Battle started: ${device1.name} vs ${device2.name}`]);
+  };
+
+  const HPBar = ({ current, max }) => (
+    <div className="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+      <div
+        className="bg-green-600 h-2.5 rounded-full transition-all duration-500"
+        style={{ width: `${(current / max) * 100}%` }}
+      />
+    </div>
+  );
+
+  const DeviceCard = ({ device, currentHP, position }) => {
+    if (!device) {
+      return (
+        <Card className="w-72 h-96">
+          <CardContent className="flex items-center justify-center h-full">
+            <select
+              className="w-full p-2 border rounded"
+              onChange={(e) =>
+                selectDevice(e.target.value, position === 'left' ? 1 : 2)
+              }
+            >
+              <option value="">Select a device...</option>
+              {Object.keys(deviceDatabase).map((name) => (
+                <option key={name} value={name}>
+                  {name}
+                </option>
+              ))}
+            </select>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    return (
+      <div className="flex flex-col items-center">
+        <Card className="w-72 mb-4">
+          <CardHeader>
+            <CardTitle className="text-lg">{device.name}</CardTitle>
+            <div className="text-sm text-gray-500">Rank: {device.rank}</div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <Heart className="w-4 h-4 text-red-500" />
+                  HP: {currentHP}/{device.maxHP}
+                </div>
+                <HPBar current={currentHP} max={device.maxHP} />
+              </div>
+              <div className="flex items-center gap-2">
+                <Shield className="w-4 h-4 text-blue-500" />
+                Defense: {device.physicalDefense}
+              </div>
+              <div className="flex items-center gap-2">
+                <Sword className="w-4 h-4 text-orange-500" />
+                Strength: {device.strength}
+              </div>
+              <div className="flex items-center gap-2">
+                <Brain className="w-4 h-4 text-purple-500" />
+                Magic Power: {device.spellPower}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <RankCharacter
+          rank={device.rank}
+          isAttacking={position === 'left' ? isDevice1Attacking : isDevice2Attacking}
+          isHit={position === 'left' ? isDevice1Hit : isDevice2Hit}
+          position={position}
+        />
+      </div>
+    );
+  };
+
+  return (
+    <div className="p-4">
+      <style>
+        {`
+          @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+          }
+          .animate-shake {
+            animation: shake 0.2s ease-in-out 3;
+          }
+        `}
+      </style>
+      <h1 className="text-2xl font-bold mb-6">Device Battle System</h1>
+      <div className="flex gap-4 flex-wrap mb-6 items-center justify-center">
+        <DeviceCard device={device1} currentHP={currentHP1} position="left" />
+        <div className="flex flex-col items-center justify-center">
+          <div className="text-2xl font-bold mb-4">VS</div>
+          <button
+            className={`px-4 py-2 rounded ${
+              device1 && device2 && !isBattling
+                ? 'bg-blue-500 text-white hover:bg-blue-600'
+                : 'bg-gray-300 cursor-not-allowed'
+            }`}
+            onClick={startBattle}
+            disabled={!device1 || !device2 || isBattling}
+          >
+            {isBattling ? 'Battle in Progress...' : 'Start Battle'}
+          </button>
+        </div>
+        <DeviceCard device={device2} currentHP={currentHP2} position="right" />
+      </div>
+
+      {winner && (
+        <div className="text-center mb-4 text-xl font-bold text-green-600">
+          {winner.name} wins the battle!
+        </div>
+      )}
+
+      <div className="border rounded p-4 max-h-48 overflow-y-auto">
+        <h2 className="font-bold mb-2">Battle Log</h2>
+        {battleLog.map((log, index) => (
+          <div key={index} className="text-sm mb-1">
+            {log}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
