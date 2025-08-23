@@ -12,16 +12,23 @@ const RankCharacter = ({ rank, isAttacking, isHit, position }) => {
   
   const getCharacterImage = () => {
     switch (rank) {
-      case 'Dragon':
+      case 'Archangel':
+      case 'Black Dragon':
+      case 'Gold Dragon':
         return `${basePath}/assets/characters/dragon.png`;
       case 'Phoenix':
         return `${basePath}/assets/characters/phoenix.png`;
+      case 'Titan':
+      case 'Hydra':
+      case 'Behemoth':
       case 'Griffin':
         return `${basePath}/assets/characters/griffin.png`;
-      case 'Unicorn':
+      case 'Cyclops':
+      case 'Minotaur':
+      case 'Centaur':
         return `${basePath}/assets/characters/unicorn.png`;
       default:
-        return null;
+        return `${basePath}/assets/characters/griffin.png`;
     }
   };
 
