@@ -35,13 +35,14 @@ const RankCharacter = ({ rank, isAttacking, isHit, position }) => {
   const characterImage = getCharacterImage();
 
   return (
-    <div className={`relative ${position === 'left' ? 'scale-x-1' : 'scale-x-[-1]'}`}>
+    <div className="relative">
       <img
         src={characterImage}
         alt={`${rank} character`}
         className={`w-24 h-24 relative transition-all duration-300
           ${isAttacking ? 'animate-attack' : ''}
           ${isHit ? 'animate-hit' : ''}
+          ${position === 'right' ? 'scale-x-[-1]' : ''}
         `}
       />
     </div>
