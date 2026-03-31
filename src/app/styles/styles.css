@@ -240,6 +240,24 @@
   margin-top: 2px;
 }
 
+.stat-cell-spec {
+  font-size: 0.5rem;
+  color: rgba(255, 255, 255, 0.2);
+  font-family: var(--font-mono);
+  margin-top: 3px;
+  white-space: nowrap;
+}
+
+.stat-bar-spec {
+  font-size: 0.5rem;
+  color: rgba(255, 255, 255, 0.2);
+  font-family: var(--font-mono);
+  text-align: right;
+  margin-top: -4px;
+  margin-bottom: 6px;
+  padding-right: 2px;
+}
+
 /* ── Device Selector ────────────────────── */
 .device-selector {
   display: flex;

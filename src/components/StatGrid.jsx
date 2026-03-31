@@ -5,6 +5,7 @@ export default function StatGrid({ stats }) {
         <div key={stat.label} className="stat-cell">
           <div className={`stat-cell-value ${stat.colorClass}`}>{stat.value}</div>
           <div className="stat-cell-label">{stat.label}</div>
+          {stat.spec && <div className="stat-cell-spec">{stat.spec}</div>}
         </div>
       ))}
     </div>

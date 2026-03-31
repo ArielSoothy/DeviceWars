@@ -32,12 +32,12 @@ export default function FighterCard({
   }
 
   const stats = [
-    { value: device.strength, label: 'ATK', colorClass: 'attack' },
-    { value: device.physicalDefense, label: 'DEF', colorClass: 'defense' },
-    { value: device.speed, label: 'SPD', colorClass: 'speed-stat' },
-    { value: device.spellPower, label: 'MAG', colorClass: 'magic' },
-    { value: device.magicDefense, label: 'MDEF', colorClass: 'magic-def' },
-    { value: device.hpRegen, label: 'REGEN', colorClass: 'regen' },
+    { value: device.strength, label: 'ATK', colorClass: 'attack', spec: `${device.processor} cores × ${device.multiplier}x` },
+    { value: device.physicalDefense, label: 'DEF', colorClass: 'defense', spec: `${device.performanceCores} P-cores` },
+    { value: device.speed, label: 'SPD', colorClass: 'speed-stat', spec: `${device.cpuFrequency} GHz` },
+    { value: device.spellPower, label: 'MAG', colorClass: 'magic', spec: `${device.gpu} GPU cores` },
+    { value: device.magicDefense, label: 'MDEF', colorClass: 'magic-def', spec: `${device.efficiencyCores || 0} E-cores` },
+    { value: device.hpRegen, label: 'REGEN', colorClass: 'regen', spec: `${device.storageSpeed} GB/s` },
   ];
 
   return (
@@ -77,6 +77,7 @@ export default function FighterCard({
           </div>
           <span className="stat-bar-value">{currentHP} / {device.maxHP}</span>
         </div>
+        <div className="stat-bar-spec">{device.storage}GB storage</div>
         <div className="stat-bar-row">
           <span className="stat-bar-label">MP</span>
           <div className="stat-bar-track">
@@ -88,6 +89,7 @@ export default function FighterCard({
           </div>
           <span className="stat-bar-value">{currentMana} / {device.maxMana}</span>
         </div>
+        <div className="stat-bar-spec">{device.ram}GB {device.ramType}</div>
       </div>
 
       <StatGrid stats={stats} />
