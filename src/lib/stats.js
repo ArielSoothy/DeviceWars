@@ -15,6 +15,15 @@ export const RANKS = [
   { minScore: 0, title: 'Skeleton', multiplier: 0.7, tier: 'trash', character: 'griffin' },
 ];
 
+// Architecture traits — displayed on card, combat bonuses in Phase 2
+export const ARCHITECTURES = {
+  'apple-silicon': { name: 'Unified Memory', icon: '🔗', description: 'CPU, GPU & Neural Engine share memory' },
+  'discrete-gpu':  { name: 'Dedicated VRAM', icon: '💎', description: 'GPU has its own memory pool' },
+  'mobile-chip':   { name: 'Burst Mode', icon: '⚡', description: 'Optimized for peak burst performance' },
+  'amd-apu':       { name: 'Power Efficient', icon: '♻️', description: 'Sustained performance under load' },
+  'legacy-intel':  { name: 'Battle Hardened', icon: '🛡️', description: 'Proven x86 workhorse' },
+};
+
 export function calculateRank(geekbench) {
   return RANKS.find(r => geekbench >= r.minScore) || RANKS[RANKS.length - 1];
 }
@@ -22,18 +31,34 @@ export function calculateRank(geekbench) {
 export function calculateStats(device) {
   const rank = calculateRank(device.geekbench);
   return {
+    // HP from storage — phones are fragile, desktops are tanky
     maxHP: Math.floor(device.storage * 2),
     hpRegen: Math.floor(device.storageSpeed * 2),
-    strength: Math.floor(device.processor * 10 * rank.multiplier),
-    physicalDefense: Math.floor(device.performanceCores * 8),
-    magicDefense: Math.floor((device.efficiencyCores || 0) * 10),
-    speed: Math.floor(device.cpuFrequency * 10),
+
+    // ATK from multi-core benchmark — total combat power
+    strength: Math.floor(device.geekbenchMulti / 100),
+
+    // DEF from core architecture — P-cores block hard, E-cores help
+    physicalDefense: Math.floor((device.performanceCores * 8) + ((device.efficiencyCores || 0) * 4)),
+
+    // SPD from single-core benchmark — reflexes, initiative
+    speed: Math.floor(device.geekbench / 50),
+
+    // Mana from RAM — your spell resource pool
     maxMana: Math.floor(device.ram * 10),
     manaRegen: Math.floor(device.ramSpeed * 2),
+
+    // Spell Power from GPU — magic damage
     spellPower: Math.floor(device.gpu * 8),
+
+    // Magic defense from efficiency cores (background resilience)
+    magicDefense: Math.floor((device.efficiencyCores || 0) * 10),
+
+    // Meta
     rank: rank.title,
     tier: rank.tier,
     character: rank.character,
     multiplier: rank.multiplier,
+    architecture: device.architecture || null,
   };
 }

@@ -33,9 +33,9 @@ export default function FighterCard({
   }
 
   const stats = [
-    { value: device.strength, label: 'ATK', colorClass: 'attack', spec: `${device.processor} cores × ${device.multiplier}x`, icon: Sword },
-    { value: device.physicalDefense, label: 'DEF', colorClass: 'defense', spec: `${device.performanceCores} P-cores`, icon: Shield },
-    { value: device.speed, label: 'SPD', colorClass: 'speed-stat', spec: `${device.cpuFrequency} GHz`, icon: Gauge },
+    { value: device.strength, label: 'ATK', colorClass: 'attack', spec: `MC: ${(device.geekbenchMulti / 1000).toFixed(1)}k`, icon: Sword },
+    { value: device.physicalDefense, label: 'DEF', colorClass: 'defense', spec: `${device.performanceCores}P + ${device.efficiencyCores || 0}E`, icon: Shield },
+    { value: device.speed, label: 'SPD', colorClass: 'speed-stat', spec: `SC: ${device.geekbench}`, icon: Gauge },
     { value: device.spellPower, label: 'MAG', colorClass: 'magic', spec: `${device.gpu} GPU cores`, icon: Zap },
     { value: device.magicDefense, label: 'MDEF', colorClass: 'magic-def', spec: `${device.efficiencyCores || 0} E-cores`, icon: ShieldCheck },
     { value: device.hpRegen, label: 'REGEN', colorClass: 'regen', spec: `${device.storageSpeed} GB/s`, icon: Heart },
