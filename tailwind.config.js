@@ -8,8 +8,20 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        player1: 'var(--player1)',
+        player2: 'var(--player2)',
+        gold: 'var(--gold)',
+        magic: 'var(--magic)',
+        speed: 'var(--speed)',
+        surface: {
+          DEFAULT: 'var(--surface)',
+          border: 'var(--surface-border)',
+          hover: 'var(--surface-hover)',
+        },
+      },
+      fontFamily: {
+        mono: ['var(--font-geist-mono)'],
+        sans: ['var(--font-geist-sans)'],
       },
     },
   },
