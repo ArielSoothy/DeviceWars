@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from 'framer-motion';
+import { Sword, Shield, Zap, ShieldCheck, Gauge, Heart } from 'lucide-react';
 import FighterCharacter from './FighterCharacter';
 import StatGrid from './StatGrid';
 import DeviceSelector from './DeviceSelector';
@@ -32,12 +33,12 @@ export default function FighterCard({
   }
 
   const stats = [
-    { value: device.strength, label: 'ATK', colorClass: 'attack', spec: `${device.processor} cores × ${device.multiplier}x` },
-    { value: device.physicalDefense, label: 'DEF', colorClass: 'defense', spec: `${device.performanceCores} P-cores` },
-    { value: device.speed, label: 'SPD', colorClass: 'speed-stat', spec: `${device.cpuFrequency} GHz` },
-    { value: device.spellPower, label: 'MAG', colorClass: 'magic', spec: `${device.gpu} GPU cores` },
-    { value: device.magicDefense, label: 'MDEF', colorClass: 'magic-def', spec: `${device.efficiencyCores || 0} E-cores` },
-    { value: device.hpRegen, label: 'REGEN', colorClass: 'regen', spec: `${device.storageSpeed} GB/s` },
+    { value: device.strength, label: 'ATK', colorClass: 'attack', spec: `${device.processor} cores × ${device.multiplier}x`, icon: Sword },
+    { value: device.physicalDefense, label: 'DEF', colorClass: 'defense', spec: `${device.performanceCores} P-cores`, icon: Shield },
+    { value: device.speed, label: 'SPD', colorClass: 'speed-stat', spec: `${device.cpuFrequency} GHz`, icon: Gauge },
+    { value: device.spellPower, label: 'MAG', colorClass: 'magic', spec: `${device.gpu} GPU cores`, icon: Zap },
+    { value: device.magicDefense, label: 'MDEF', colorClass: 'magic-def', spec: `${device.efficiencyCores || 0} E-cores`, icon: ShieldCheck },
+    { value: device.hpRegen, label: 'REGEN', colorClass: 'regen', spec: `${device.storageSpeed} GB/s`, icon: Heart },
   ];
 
   return (
