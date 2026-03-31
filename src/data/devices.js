@@ -1,13 +1,14 @@
 // ╔══════════════════════════════════════════════════════════════════╗
 // ║  DeviceWars — Master Device Spec Sheet                         ║
 // ║                                                                ║
-// ║  geekbench:      GB6 single-core score                         ║
-// ║  geekbenchMulti: GB6 multi-core score                          ║
-// ║  gpu:            compute units (Apple cores / NVIDIA SMs /     ║
-// ║                  AMD CUs) — normalized across architectures     ║
-// ║  ramSpeed:       memory bandwidth in GB/s                      ║
-// ║  storageSpeed:   sequential read in GB/s                       ║
-// ║  architecture:   trait key for set bonuses                     ║
+// ║  geekbench:      GB6 single-core score → SPD                   ║
+// ║  geekbenchMulti: GB6 multi-core score  → ATK                   ║
+// ║  gpu:            compute units (Apple / NVIDIA SMs / AMD CUs)  ║
+// ║  tdp:            thermal design power in watts                 ║
+// ║  cooling:        'fanless' | 'fan' | 'tower'                   ║
+// ║     fanless  → burst damage, degrades over time                ║
+// ║     fan      → steady sustained performance                    ║
+// ║     tower    → ramps UP over time (turbo stabilizes)           ║
 // ╚══════════════════════════════════════════════════════════════════╝
 
 const deviceDatabase = {
@@ -22,6 +23,7 @@ const deviceDatabase = {
     storage: 2000, storageType: "NVMe SSD", storageSpeed: 7.4,
     ram: 128, ramType: "LPDDR5X", ramSpeed: 8.0,
     gpu: 40, gpuType: "Integrated 40-core GPU",
+    tdp: 45, cooling: "fan",
   },
   "MacBook Pro M4 Pro": {
     category: "mac", architecture: "apple-silicon",
@@ -31,6 +33,7 @@ const deviceDatabase = {
     storage: 1000, storageType: "NVMe SSD", storageSpeed: 7.4,
     ram: 48, ramType: "LPDDR5X", ramSpeed: 6.4,
     gpu: 20, gpuType: "Integrated 20-core GPU",
+    tdp: 40, cooling: "fan",
   },
   "MacBook Air M4": {
     category: "mac", architecture: "apple-silicon",
@@ -40,6 +43,7 @@ const deviceDatabase = {
     storage: 512, storageType: "NVMe SSD", storageSpeed: 7.4,
     ram: 24, ramType: "LPDDR5X", ramSpeed: 7.5,
     gpu: 10, gpuType: "Integrated 10-core GPU",
+    tdp: 22, cooling: "fanless",
   },
   "Mac Mini M4": {
     category: "mac", architecture: "apple-silicon",
@@ -49,6 +53,7 @@ const deviceDatabase = {
     storage: 512, storageType: "NVMe SSD", storageSpeed: 7.4,
     ram: 32, ramType: "LPDDR5X", ramSpeed: 7.5,
     gpu: 10, gpuType: "Integrated 10-core GPU",
+    tdp: 22, cooling: "tower",
   },
 
   // ══ Apple Mac — M3 Generation (2023-2024) ═══════════════════════
@@ -61,6 +66,7 @@ const deviceDatabase = {
     storage: 4000, storageType: "NVMe SSD", storageSpeed: 7.6,
     ram: 96, ramType: "LPDDR5", ramSpeed: 7.6,
     gpu: 40, gpuType: "Integrated 40-core GPU",
+    tdp: 45, cooling: "fan",
   },
   "MacBook Pro M3 Pro": {
     category: "mac", architecture: "apple-silicon",
@@ -70,6 +76,7 @@ const deviceDatabase = {
     storage: 1000, storageType: "NVMe SSD", storageSpeed: 7.4,
     ram: 36, ramType: "LPDDR5", ramSpeed: 6.4,
     gpu: 18, gpuType: "Integrated 18-core GPU",
+    tdp: 35, cooling: "fan",
   },
   "MacBook Air M3": {
     category: "mac", architecture: "apple-silicon",
@@ -79,6 +86,7 @@ const deviceDatabase = {
     storage: 512, storageType: "NVMe SSD", storageSpeed: 7.4,
     ram: 16, ramType: "LPDDR5", ramSpeed: 6.4,
     gpu: 10, gpuType: "Integrated 10-core GPU",
+    tdp: 22, cooling: "fanless",
   },
 
   // ══ Apple Mac — M2 Generation (2022-2023) ═══════════════════════
@@ -91,6 +99,7 @@ const deviceDatabase = {
     storage: 1000, storageType: "NVMe SSD", storageSpeed: 7.4,
     ram: 64, ramType: "LPDDR5", ramSpeed: 6.4,
     gpu: 38, gpuType: "Integrated 38-core GPU",
+    tdp: 45, cooling: "fan",
   },
   "MacBook Pro M2 Pro": {
     category: "mac", architecture: "apple-silicon",
@@ -100,6 +109,7 @@ const deviceDatabase = {
     storage: 1000, storageType: "NVMe SSD", storageSpeed: 5.0,
     ram: 32, ramType: "LPDDR5", ramSpeed: 6.4,
     gpu: 19, gpuType: "Integrated 19-core GPU",
+    tdp: 35, cooling: "fan",
   },
   "MacBook Air M2": {
     category: "mac", architecture: "apple-silicon",
@@ -109,6 +119,7 @@ const deviceDatabase = {
     storage: 512, storageType: "NVMe SSD", storageSpeed: 5.0,
     ram: 16, ramType: "LPDDR5", ramSpeed: 5.2,
     gpu: 10, gpuType: "Integrated 10-core GPU",
+    tdp: 15, cooling: "fanless",
   },
   "Mac Studio M2 Ultra": {
     category: "mac", architecture: "apple-silicon",
@@ -118,6 +129,7 @@ const deviceDatabase = {
     storage: 2000, storageType: "NVMe SSD", storageSpeed: 7.4,
     ram: 192, ramType: "LPDDR5", ramSpeed: 6.4,
     gpu: 76, gpuType: "Integrated 76-core GPU",
+    tdp: 120, cooling: "tower",
   },
 
   // ══ Apple Mac — M1 Generation (2020-2022) ═══════════════════════
@@ -130,6 +142,7 @@ const deviceDatabase = {
     storage: 2000, storageType: "NVMe SSD", storageSpeed: 7.0,
     ram: 32, ramType: "LPDDR5", ramSpeed: 6.4,
     gpu: 24, gpuType: "Integrated 24-core GPU",
+    tdp: 45, cooling: "fan",
   },
   "MacBook Pro M1 Pro": {
     category: "mac", architecture: "apple-silicon",
@@ -139,6 +152,7 @@ const deviceDatabase = {
     storage: 1024, storageType: "NVMe SSD", storageSpeed: 6.0,
     ram: 16, ramType: "LPDDR5", ramSpeed: 6.4,
     gpu: 16, gpuType: "Integrated 16-core GPU",
+    tdp: 35, cooling: "fan",
   },
   "MacBook Air M1": {
     category: "mac", architecture: "apple-silicon",
@@ -148,6 +162,7 @@ const deviceDatabase = {
     storage: 256, storageType: "NVMe SSD", storageSpeed: 5.0,
     ram: 8, ramType: "LPDDR4X", ramSpeed: 4.2,
     gpu: 8, gpuType: "Integrated 8-core GPU",
+    tdp: 15, cooling: "fanless",
   },
 
   // ══ Apple Mac — Intel (Legacy) ══════════════════════════════════
@@ -160,6 +175,7 @@ const deviceDatabase = {
     storage: 1000, storageType: "NVMe SSD", storageSpeed: 3.2,
     ram: 16, ramType: "DDR4", ramSpeed: 2.6,
     gpu: 4, gpuType: "AMD Radeon Pro 5500M (4 CUs)",
+    tdp: 45, cooling: "fan",
   },
 
   // ══ Apple Mobile — iPhone ═══════════════════════════════════════
@@ -172,6 +188,7 @@ const deviceDatabase = {
     storage: 1000, storageType: "NVMe", storageSpeed: 3.0,
     ram: 8, ramType: "LPDDR5X", ramSpeed: 7.5,
     gpu: 6, gpuType: "Apple GPU 6-core",
+    tdp: 7, cooling: "fanless",
   },
   "iPhone 16": {
     category: "mobile", architecture: "mobile-chip",
@@ -181,6 +198,7 @@ const deviceDatabase = {
     storage: 256, storageType: "NVMe", storageSpeed: 2.5,
     ram: 8, ramType: "LPDDR5X", ramSpeed: 7.5,
     gpu: 5, gpuType: "Apple GPU 5-core",
+    tdp: 6, cooling: "fanless",
   },
   "iPhone 15 Pro": {
     category: "mobile", architecture: "mobile-chip",
@@ -190,6 +208,7 @@ const deviceDatabase = {
     storage: 256, storageType: "NVMe", storageSpeed: 2.5,
     ram: 8, ramType: "LPDDR5", ramSpeed: 6.4,
     gpu: 6, gpuType: "Apple GPU 6-core",
+    tdp: 7, cooling: "fanless",
   },
   "iPhone 14 Pro": {
     category: "mobile", architecture: "mobile-chip",
@@ -199,6 +218,7 @@ const deviceDatabase = {
     storage: 256, storageType: "NVMe", storageSpeed: 2.0,
     ram: 6, ramType: "LPDDR5", ramSpeed: 5.5,
     gpu: 5, gpuType: "Apple GPU 5-core",
+    tdp: 6, cooling: "fanless",
   },
   "iPhone 13": {
     category: "mobile", architecture: "mobile-chip",
@@ -208,6 +228,7 @@ const deviceDatabase = {
     storage: 128, storageType: "NVMe", storageSpeed: 1.5,
     ram: 4, ramType: "LPDDR4X", ramSpeed: 4.2,
     gpu: 4, gpuType: "Apple GPU 4-core",
+    tdp: 6, cooling: "fanless",
   },
   "iPhone 12": {
     category: "mobile", architecture: "mobile-chip",
@@ -217,6 +238,7 @@ const deviceDatabase = {
     storage: 128, storageType: "NVMe", storageSpeed: 1.2,
     ram: 4, ramType: "LPDDR4X", ramSpeed: 4.2,
     gpu: 4, gpuType: "Apple GPU 4-core",
+    tdp: 5, cooling: "fanless",
   },
 
   // ══ Apple Mobile — iPad ═════════════════════════════════════════
@@ -229,6 +251,7 @@ const deviceDatabase = {
     storage: 1000, storageType: "NVMe SSD", storageSpeed: 6.0,
     ram: 16, ramType: "LPDDR5X", ramSpeed: 7.5,
     gpu: 10, gpuType: "Apple GPU 10-core",
+    tdp: 22, cooling: "fanless",
   },
 
   // ══ Gaming — PC ═════════════════════════════════════════════════
@@ -241,6 +264,7 @@ const deviceDatabase = {
     storage: 2000, storageType: "NVMe Gen5 SSD", storageSpeed: 12.0,
     ram: 64, ramType: "DDR5-6400", ramSpeed: 6.4,
     gpu: 170, gpuType: "NVIDIA RTX 5090 (170 SMs)",
+    tdp: 575, cooling: "tower",
   },
   "Gaming PC (RTX 4090)": {
     category: "gaming", architecture: "discrete-gpu",
@@ -250,6 +274,7 @@ const deviceDatabase = {
     storage: 2000, storageType: "NVMe SSD", storageSpeed: 7.0,
     ram: 64, ramType: "DDR5-5600", ramSpeed: 5.6,
     gpu: 128, gpuType: "NVIDIA RTX 4090 (128 SMs)",
+    tdp: 475, cooling: "tower",
   },
 
   // ══ Gaming — Console & Handheld ═════════════════════════════════
@@ -262,6 +287,7 @@ const deviceDatabase = {
     storage: 825, storageType: "Custom SSD", storageSpeed: 5.5,
     ram: 16, ramType: "GDDR6", ramSpeed: 7.0,
     gpu: 36, gpuType: "AMD RDNA 2 (36 CUs)",
+    tdp: 200, cooling: "tower",
   },
   "Steam Deck OLED": {
     category: "gaming", architecture: "amd-apu",
@@ -271,6 +297,7 @@ const deviceDatabase = {
     storage: 512, storageType: "NVMe SSD", storageSpeed: 3.0,
     ram: 16, ramType: "LPDDR5", ramSpeed: 5.5,
     gpu: 8, gpuType: "AMD RDNA 2 (8 CUs)",
+    tdp: 25, cooling: "fan",
   },
   "Nintendo Switch OLED": {
     category: "gaming", architecture: "mobile-chip",
@@ -280,6 +307,7 @@ const deviceDatabase = {
     storage: 64, storageType: "eMMC", storageSpeed: 0.4,
     ram: 4, ramType: "LPDDR4", ramSpeed: 3.2,
     gpu: 2, gpuType: "NVIDIA Maxwell (2 SMs)",
+    tdp: 18, cooling: "fan",
   },
 };
 
@@ -287,6 +315,12 @@ export const DEVICE_CATEGORIES = {
   mac: { label: "Apple Mac", icon: "💻" },
   mobile: { label: "Apple Mobile", icon: "📱" },
   gaming: { label: "Gaming", icon: "🎮" },
+};
+
+export const COOLING_TYPES = {
+  fanless: { name: "Fanless", icon: "🔥", description: "Burst power, throttles over time", effect: "burst" },
+  fan:     { name: "Fan Cooled", icon: "🌀", description: "Steady sustained performance", effect: "sustained" },
+  tower:   { name: "Tower Cooled", icon: "❄️", description: "Ramps up over time", effect: "ramp" },
 };
 
 export default deviceDatabase;

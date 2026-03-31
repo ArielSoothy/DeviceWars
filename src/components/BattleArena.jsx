@@ -77,6 +77,7 @@ export default function BattleArena() {
         fighter1, fighter2,
         hp1: hp1Ref.current, hp2: hp2Ref.current,
         mana1: mana1Ref.current, mana2: mana2Ref.current,
+        round,
       });
 
       const newEvents = result.events.map(e => ({

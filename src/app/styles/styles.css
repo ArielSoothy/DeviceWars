@@ -153,6 +153,48 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+/* ── Trait Badges ───────────────────────── */
+.trait-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.trait-badge {
+  font-size: 0.625rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 8px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.trait-badge.cooling-fanless {
+  background: rgba(255, 107, 107, 0.12);
+  color: #ff8787;
+  border: 1px solid rgba(255, 107, 107, 0.2);
+}
+
+.trait-badge.cooling-fan {
+  background: rgba(77, 171, 247, 0.12);
+  color: #74c0fc;
+  border: 1px solid rgba(77, 171, 247, 0.2);
+}
+
+.trait-badge.cooling-tower {
+  background: rgba(81, 207, 102, 0.12);
+  color: #69db7c;
+  border: 1px solid rgba(81, 207, 102, 0.2);
+}
+
+.trait-badge.arch {
+  background: rgba(156, 136, 255, 0.12);
+  color: #b4a0ff;
+  border: 1px solid rgba(156, 136, 255, 0.2);
+}
+
 /* ── HP / Mana Bars ─────────────────────── */
 .vital-stats {
   margin-bottom: 16px;

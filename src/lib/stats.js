@@ -54,6 +54,10 @@ export function calculateStats(device) {
     // Magic defense from efficiency cores (background resilience)
     magicDefense: Math.floor((device.efficiencyCores || 0) * 10),
 
+    // Thermal / Endurance — determines combat modifier over time
+    cooling: device.cooling || 'fan',
+    tdp: device.tdp || 30,
+
     // Meta
     rank: rank.title,
     tier: rank.tier,
@@ -61,4 +65,19 @@ export function calculateStats(device) {
     multiplier: rank.multiplier,
     architecture: device.architecture || null,
   };
+}
+
+// Returns ATK/SPD/MAG multiplier for a given round based on cooling type
+// fanless:  120% rounds 1-4, then -5% per round (min 60%)
+// fan:      100% always
+// tower:    90% round 1, +3% per round (max 120%)
+export function getThermalMultiplier(cooling, round) {
+  if (cooling === 'fanless') {
+    if (round <= 4) return 1.2;
+    return Math.max(0.6, 1.2 - (round - 4) * 0.05);
+  }
+  if (cooling === 'tower') {
+    return Math.min(1.2, 0.9 + round * 0.03);
+  }
+  return 1.0; // fan-cooled: steady
 }

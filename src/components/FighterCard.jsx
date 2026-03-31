@@ -5,6 +5,8 @@ import { Sword, Shield, Zap, ShieldCheck, Gauge, Heart } from 'lucide-react';
 import FighterCharacter from './FighterCharacter';
 import StatGrid from './StatGrid';
 import DeviceSelector from './DeviceSelector';
+import { COOLING_TYPES } from '@/data/devices';
+import { ARCHITECTURES } from '@/lib/stats';
 
 export default function FighterCard({
   device, playerNum, currentHP, currentMana,
@@ -64,6 +66,18 @@ export default function FighterCard({
       <div className="fighter-info">
         <div className="device-name">{device.name}</div>
         <span className={`rank-badge ${device.tier}`}>{device.rank}</span>
+        <div className="trait-row">
+          {device.cooling && COOLING_TYPES[device.cooling] && (
+            <span className={`trait-badge cooling-${device.cooling}`}>
+              {COOLING_TYPES[device.cooling].icon} {COOLING_TYPES[device.cooling].name}
+            </span>
+          )}
+          {device.architecture && ARCHITECTURES[device.architecture] && (
+            <span className="trait-badge arch">
+              {ARCHITECTURES[device.architecture].icon} {ARCHITECTURES[device.architecture].name}
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="vital-stats">
