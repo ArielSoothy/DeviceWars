@@ -241,16 +241,16 @@
 }
 
 .stat-cell-spec {
-  font-size: 0.6875rem;
-  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
   font-family: var(--font-mono);
   margin-top: 4px;
   white-space: nowrap;
 }
 
 .stat-bar-spec {
-  font-size: 0.6875rem;
-  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
   font-family: var(--font-mono);
   text-align: right;
   margin-top: -2px;
